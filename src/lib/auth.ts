@@ -42,7 +42,7 @@ async function getHmacKey(secret: string): Promise<CryptoKey> {
   const encoder = new TextEncoder();
   return crypto.subtle.importKey(
     "raw",
-    encoder.encode(secret),
+    encoder.encode(secret) as unknown as BufferSource,
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"]
@@ -73,7 +73,8 @@ function base64UrlDecode(str: string): Uint8Array {
     base64 += "=";
   }
   const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
+  const buffer = new ArrayBuffer(binary.length);
+  const bytes = new Uint8Array(buffer);
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
@@ -102,7 +103,11 @@ export async function createSessionToken(
   const payloadB64 = base64UrlEncode(payloadBytes);
 
   const key = await getHmacKey(secret);
-  const signatureBuffer = await crypto.subtle.sign("HMAC", key, encoder.encode(payloadB64));
+  const signatureBuffer = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    encoder.encode(payloadB64) as unknown as BufferSource
+  );
   const signatureB64 = base64UrlEncode(signatureBuffer);
 
   return `${payloadB64}.${signatureB64}`;
@@ -137,8 +142,8 @@ export async function verifySessionToken(
     const isValid = await crypto.subtle.verify(
       "HMAC",
       key,
-      signatureBytes,
-      dataToVerify
+      signatureBytes as unknown as BufferSource,
+      dataToVerify as unknown as BufferSource
     );
 
     if (!isValid) {
