@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-parchment: #FAF8F5;
+  --color-ink: #1C1A17;
+  --color-ink-muted: #6E6960;
+  --color-border: #E8E4DC;
+}
+
+html {
+  background-color: #FAF8F5;
+  color: #1C1A17;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #FAF8F5;
+  color: #1C1A17;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Image selection prevention in gallery if desired */
+img {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Subtle focus ring for accessibility without harsh outlines */
+:focus-visible {
+  outline: 2px solid #524D44;
+  outline-offset: 2px;
+}
